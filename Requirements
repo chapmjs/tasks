@@ -1,0 +1,33 @@
+Requirements Definition
+- Enter Task
+  - Capture	
+  - Multi-device
+  - off-line(?)	
+  - upload audio note?
+  - include email?
+  - priority
+  - date entered
+  - due date
+  - assign to	
+  - Inform to	
+  - category	
+  - estimated hours	
+  - sub tasks?	
+  - action/event(s)
+- Edit Task
+  - notes
+  - status
+
+
+What do I do next?
+  - Sort by
+    - Task
+    - category
+    - date
+    - priority
+    - urgency
+    - estimated time
+    - actual time? (reporting)
+  - Close task
+    - complete/archive
+    - delete

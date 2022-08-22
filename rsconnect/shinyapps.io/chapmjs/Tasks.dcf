@@ -1,0 +1,12 @@
+name: Tasks
+title: Tasks
+username:
+account: chapmjs
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 905804
+bundleId: 2056021
+url: https://chapmjs.shinyapps.io/Tasks/
+when: 1556824989.48003
+asMultiple: FALSE
+asStatic: FALSE
