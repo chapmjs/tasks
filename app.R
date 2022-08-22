@@ -54,6 +54,7 @@ fields <- c("submitname", "subject", "note", "importance", "urgency",
 # Shiny app for task input and managment
 shinyApp(
   ui = fluidPage(
+    DT::dataTableOutput("taskdb", width = 300), tags$hr(),
     selectInput("submitname", "Name", choices = userlist()),
     textInput("subject", "Task", "", width = '250px'),
     textAreaInput("note", "Note (optional), rows = 2"),
@@ -68,8 +69,8 @@ shinyApp(
       textInput("timestamp", "", get_time_epoch()),
       style = "display: none;"
     ),
-    actionButton("submit", "Submit"),
-    DT::dataTableOutput("taskdb", width = 300), tags$hr()
+    actionButton("submit", "Submit")
+
     
   ),
   server = function(input, output, session) {
