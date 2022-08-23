@@ -73,7 +73,6 @@ fields <- c("task_id", "create_date_time", "category", "organization", "importan
 # Shiny app for task input and management
 shinyApp(
   ui = fluidPage(
-    DT::dataTableOutput("task_list", width = 300), tags$hr(),
     #selectInput("created_by", "Name", choices = userlist),
     textInput("subject", "Task", "", width = '300px'),
     selectInput("category", "Category", choices = categories),
@@ -84,6 +83,9 @@ shinyApp(
                 1, 3, 2, ticks = FALSE),
     #selectInput("assigned", "Proposed Assignee (who should complete the job?)", 
     #            choices = c("Dad","Mom","Josh","Anna","Elisa","Rebekah","Sarah")),
+    
+    DT::DTOutput("task_list", width = 300), tags$hr(),
+    
     div(
       # hidden input field tracking the timestamp of the submission
       textInput("create_date_time", "", get_time_epoch()),
@@ -108,7 +110,7 @@ shinyApp(
     
     # Show the previous task_data
     # (update with current response when Submit is clicked)
-    output$task_list <- DT::renderDataTable({
+    output$task_list <- DT::renderDT({
       input$submit
       loadTasks()
     })     
