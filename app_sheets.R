@@ -16,6 +16,7 @@ library(shiny)
 library(googlesheets4)
 library(googledrive)
 library(DT)
+library(dplyr)
 
 
 # authorization
@@ -59,9 +60,9 @@ categories <- sort(unique(task_data$category))
 
 loadTasks <- function() {
   # read data from googlesheet
-  task_data <- read_sheet(ss)
+  task_list <- read_sheet(ss)
   # filter for open or closed tasks
-  task_data <- filter(task_data, status %in% c("Open", "Idea"))
+  task_list <- filter(task_list, task_list$status %in% c("Open", "Idea"))
 
 }
 
@@ -84,7 +85,7 @@ shinyApp(
     #selectInput("assigned", "Proposed Assignee (who should complete the job?)", 
     #            choices = c("Dad","Mom","Josh","Anna","Elisa","Rebekah","Sarah")),
     
-    DT::DTOutput("task_list", width = 300), tags$hr(),
+    DT::DTOutput("task_list"), tags$hr(),
     
     div(
       # hidden input field tracking the timestamp of the submission
