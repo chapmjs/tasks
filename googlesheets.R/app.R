@@ -3,7 +3,7 @@ library(shiny)
 # Define the fields we want to save from the form
 fields <- c("name", "used_shiny", "r_num_years")
 
-library(googlesheets)
+library(googlesheets4)
 
 table <- "responses"
 
