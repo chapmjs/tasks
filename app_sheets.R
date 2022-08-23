@@ -19,8 +19,9 @@ library(tidyverse)
 
 
 # authorization
-googledrive::drive_auth()
+googledrive::drive_auth("chapmjs@gmail.com")
 gs4_auth(token = drive_token())
+#gs4_auth("chapmjs@gmail.com")
 
 
 
@@ -54,7 +55,7 @@ gs4_auth(token = drive_token())
 ss <- "https://docs.google.com/spreadsheets/d/1OxSuTreC34W5XDZPhXBNw2_tfs-50N2N1J1edTnTJE4/edit#gid=183391959"
 task_data <- read_sheet(ss)
 task_data <- filter(task_data, status %in% c("Open", "Idea"))
-categories <- distinct(task_data$category)
+categories <- sort(unique(task_data$category))
 
 
 
