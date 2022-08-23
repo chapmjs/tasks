@@ -54,6 +54,7 @@ gs4_auth(token = drive_token())
 ss <- "https://docs.google.com/spreadsheets/d/1OxSuTreC34W5XDZPhXBNw2_tfs-50N2N1J1edTnTJE4/edit#gid=183391959"
 task_data <- read_sheet(ss)
 task_data <- filter(task_data, status %in% c("Open", "Idea"))
+categories <- distinct(task_data$category)
 
 
 
@@ -65,18 +66,19 @@ fields <- c("task_id", "create_date_time", "category", "organization", "importan
 shinyApp(
   ui = fluidPage(
     DT::dataTableOutput("task_data", width = 300), tags$hr(),
-    selectInput("created_by", "Name", choices = userlist),
-    textInput("subject", "Task", "", width = '250px'),
+    #selectInput("created_by", "Name", choices = userlist),
+    textInput("subject", "Task", "", width = '300px'),
+    selectInput("category", "Category", choices = categories),
     textAreaInput("note", "Note (optional), rows = 2"),
-    sliderInput("importance", "Importance (1 is Most Important, 9 is Least Important)",
-                1, 9, 5, ticks = FALSE),
+    sliderInput("importance", "Importance (1 is Most Important, 3 is Least Important)",
+                1, 3, 2, ticks = FALSE),
     sliderInput("urgency", "Urgency (1 is Extremely Urgent, 9 is not urgent)", 
-                1, 9, 5, ticks = FALSE),
-    selectInput("assigned", "Proposed Assignee (who should complete the job?)", 
-                choices = c("Dad","Mom","Josh","Anna","Elisa","Rebekah","Sarah")),
+                1, 3, 2, ticks = FALSE),
+    #selectInput("assigned", "Proposed Assignee (who should complete the job?)", 
+    #            choices = c("Dad","Mom","Josh","Anna","Elisa","Rebekah","Sarah")),
     div(
       # hidden input field tracking the timestamp of the submission
-      textInput("timestamp", "", get_time_epoch()),
+      textInput("create_date_time", "", get_time_epoch()),
       style = "display: none;"
     ),
     actionButton("submit", "Submit")
