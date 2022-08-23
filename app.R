@@ -9,7 +9,7 @@
 source("helpers.R")
 library(shiny)
 library(RSQLite)
-sqlitePath <- "taskdb.db"
+sqlitePath <- "taskdb.sqlite"
 table <- "tasks"
 
 saveData <- function(data) {
