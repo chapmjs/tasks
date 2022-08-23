@@ -15,7 +15,7 @@
 library(shiny)
 library(googlesheets4)
 library(googledrive)
-library(tidyverse)
+library(DT)
 
 
 # authorization
@@ -50,13 +50,20 @@ gs4_auth(token = drive_token())
 
 
 
-## Retrieve data
-
+## Retrieve 
 ss <- "https://docs.google.com/spreadsheets/d/1OxSuTreC34W5XDZPhXBNw2_tfs-50N2N1J1edTnTJE4/edit#gid=183391959"
 task_data <- read_sheet(ss)
-task_data <- filter(task_data, status %in% c("Open", "Idea"))
+# create category list
 categories <- sort(unique(task_data$category))
 
+
+loadTasks <- function() {
+  # read data from googlesheet
+  task_data <- read_sheet(ss)
+  # filter for open or closed tasks
+  task_data <- filter(task_data, status %in% c("Open", "Idea"))
+
+}
 
 
 # Define the fields we want to save from the form
@@ -66,7 +73,7 @@ fields <- c("task_id", "create_date_time", "category", "organization", "importan
 # Shiny app for task input and management
 shinyApp(
   ui = fluidPage(
-    DT::dataTableOutput("task_data", width = 300), tags$hr(),
+    DT::dataTableOutput("task_list", width = 300), tags$hr(),
     #selectInput("created_by", "Name", choices = userlist),
     textInput("subject", "Task", "", width = '300px'),
     selectInput("category", "Category", choices = categories),
@@ -99,11 +106,11 @@ shinyApp(
       saveData(formData())
     })
     
-    # Show the previous taskdb
+    # Show the previous task_data
     # (update with current response when Submit is clicked)
-    output$taskdb <- DT::renderDataTable({
+    output$task_list <- DT::renderDataTable({
       input$submit
-      loadData()
+      loadTasks()
     })     
   }
 )
