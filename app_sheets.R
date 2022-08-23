@@ -88,7 +88,7 @@ shinyApp(
     
     div(
       # hidden input field tracking the timestamp of the submission
-      textInput("create_date_time", "", get_time_epoch()),
+      textInput("create_date_time", "", as.integer(Sys.time())),
       style = "display: none;"
     ),
     actionButton("submit", "Submit")
