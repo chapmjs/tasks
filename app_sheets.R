@@ -57,7 +57,6 @@ task_data <- read_sheet(ss)
 # create category list
 categories <- sort(unique(task_data$category))
 
-
 loadOpen <- function() {
   # read data from googlesheet
   task_list <- read_sheet(ss)
@@ -80,9 +79,12 @@ loadClosed <- function() {
   
 }
 
+saveData <- function(new_task_data) {
+  ss %>% sheet_append(new_task_data)
+}
 
 # Define the fields we want to save from the form
-fields <- c("task_id", "create_date_time", "category", "organization", "importance",  
+fields <- c("task_id", "create_date_time", "category", "importance",  
             "urgency", "status", "subject", "estimated_time", "note", "next_step")
 
 # Shiny app for task input and management
@@ -104,6 +106,7 @@ shinyApp(
         div(
           # hidden input field tracking the timestamp of the submission
           textInput("create_date_time", "", as.integer(Sys.time())),
+          textInput("task_id", n_distinct(task_data$task_id + 1)),
           style = "display: none;"
         ),
         actionButton("submit", "Submit")
@@ -146,7 +149,7 @@ shinyApp(
     
     # When the Submit button is clicked, save the form data
     observeEvent(input$submit, {
-      saveData(formData())
+      sheet_append(ss,formData(), sheet = 1)
     })
     
     # Show the previous task_data
