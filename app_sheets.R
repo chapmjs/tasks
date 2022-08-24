@@ -91,11 +91,7 @@ shinyApp(
     title = "Task List",
     sidebarLayout(
       sidebarPanel(
-<<<<<<< HEAD
         width = 4,
-=======
-        width = 2,
->>>>>>> 7415a68d0b6afb17d5bb2227d57da220b5a4111d
         #selectInput("created_by", "Name", choices = userlist),
         textInput("subject", "Task", "", width = '300px'),
         selectInput("category", "Category", choices = categories),
