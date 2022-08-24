@@ -91,40 +91,41 @@ shinyApp(
     title = "Task List",
     sidebarLayout(
       sidebarPanel(
-        conditionalPanel(
-          'input.dataset === "open_tasks"',
+        width = 4,
+        #selectInput("created_by", "Name", choices = userlist),
+        textInput("subject", "Task", "", width = '300px'),
+        selectInput("category", "Category", choices = categories),
+        textAreaInput("note", "Note (optional), rows = 2"),
+        sliderInput("importance", "Importance (1 is Most Important, 3 is Least Important)",
+                    1, 3, 2, ticks = FALSE),
+        sliderInput("urgency", "Urgency (1 is Extremely Urgent, 9 is not urgent)", 
+                    1, 3, 2, ticks = FALSE),
+        selectInput("status", "Status", choices = c("Open","Idea", "Closed")),
+        #selectInput("assigned", "Proposed Assignee (who should complete the job?)", 
+        #            choices = c("Dad","Mom","Josh","Anna","Elisa","Rebekah","Sarah")),
+        div(
+          # hidden input field tracking the timestamp of the submission
+          textInput("create_date_time", "", as.integer(Sys.time())),
+          style = "display: none;"
         ),
-        conditionalPanel(
-          'input.dataset === "idea_tasks"'
-        ),
-        conditionalPanel(
-          'input.dataset === "closed_tasks"'
-        )
+        actionButton("submit", "Submit")
+        
+
+        # conditionalPanel(
+        #   'input.dataset === "open_tasks"',
+        # ),
+        # conditionalPanel(
+        #   'input.dataset === "idea_tasks"'
+        # ),
+        # conditionalPanel(
+        #   'input.dataset === "closed_tasks"'
+        # )
       ),
       mainPanel(
        
   
         tabsetPanel(
           id = 'dataset',
-          tabPanel(
-            "New Task",
-            #selectInput("created_by", "Name", choices = userlist),
-            textInput("subject", "Task", "", width = '300px'),
-            selectInput("category", "Category", choices = categories),
-            textAreaInput("note", "Note (optional), rows = 2"),
-            sliderInput("importance", "Importance (1 is Most Important, 3 is Least Important)",
-                        1, 3, 2, ticks = FALSE),
-            sliderInput("urgency", "Urgency (1 is Extremely Urgent, 9 is not urgent)", 
-                        1, 3, 2, ticks = FALSE),
-            #selectInput("assigned", "Proposed Assignee (who should complete the job?)", 
-            #            choices = c("Dad","Mom","Josh","Anna","Elisa","Rebekah","Sarah")),
-            div(
-              # hidden input field tracking the timestamp of the submission
-              textInput("create_date_time", "", as.integer(Sys.time())),
-              style = "display: none;"
-            ),
-            actionButton("submit", "Submit")
-          ),
           tabPanel("Open Tasks", DT::DTOutput("open")),
           tabPanel("Ideas", DT::DTOutput("ideas")),
           tabPanel("Closed Tasks", DT::DTOutput("closed"))
