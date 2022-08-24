@@ -58,12 +58,26 @@ task_data <- read_sheet(ss)
 categories <- sort(unique(task_data$category))
 
 
-loadTasks <- function() {
+loadOpen <- function() {
   # read data from googlesheet
   task_list <- read_sheet(ss)
-  # filter for open or closed tasks
-  task_list <- filter(task_list, task_list$status %in% c("Open", "Idea"))
+  # filter for open tasks
+  open_tasks <- filter(task_list, task_list$status == "Open")
+  
+}
+loadIdeas <- function() {
+  # read data from googlesheet
+  task_list <- read_sheet(ss)
+  # filter for open tasks
+  idea_tasks <- filter(task_list, task_list$status == "Idea")
 
+}
+loadClosed <- function() {
+  # read data from googlesheet
+  task_list <- read_sheet(ss)
+  # filter for open tasks
+  closed_tasks <- filter(task_list, task_list$status == "Closed")
+  
 }
 
 
@@ -74,25 +88,52 @@ fields <- c("task_id", "create_date_time", "category", "organization", "importan
 # Shiny app for task input and management
 shinyApp(
   ui = fluidPage(
-    #selectInput("created_by", "Name", choices = userlist),
-    textInput("subject", "Task", "", width = '300px'),
-    selectInput("category", "Category", choices = categories),
-    textAreaInput("note", "Note (optional), rows = 2"),
-    sliderInput("importance", "Importance (1 is Most Important, 3 is Least Important)",
-                1, 3, 2, ticks = FALSE),
-    sliderInput("urgency", "Urgency (1 is Extremely Urgent, 9 is not urgent)", 
-                1, 3, 2, ticks = FALSE),
-    #selectInput("assigned", "Proposed Assignee (who should complete the job?)", 
-    #            choices = c("Dad","Mom","Josh","Anna","Elisa","Rebekah","Sarah")),
+    title = "Task List",
+    sidebarLayout(
+      sidebarPanel(
+        conditionalPanel(
+          'input.dataset === "open_tasks"',
+        ),
+        conditionalPanel(
+          'input.dataset === "idea_tasks"'
+        ),
+        conditionalPanel(
+          'input.dataset === "closed_tasks"'
+        )
+      ),
+      mainPanel(
+       
+  
+        tabsetPanel(
+          id = 'dataset',
+          tabPanel(
+            "New Task",
+            #selectInput("created_by", "Name", choices = userlist),
+            textInput("subject", "Task", "", width = '300px'),
+            selectInput("category", "Category", choices = categories),
+            textAreaInput("note", "Note (optional), rows = 2"),
+            sliderInput("importance", "Importance (1 is Most Important, 3 is Least Important)",
+                        1, 3, 2, ticks = FALSE),
+            sliderInput("urgency", "Urgency (1 is Extremely Urgent, 9 is not urgent)", 
+                        1, 3, 2, ticks = FALSE),
+            #selectInput("assigned", "Proposed Assignee (who should complete the job?)", 
+            #            choices = c("Dad","Mom","Josh","Anna","Elisa","Rebekah","Sarah")),
+            div(
+              # hidden input field tracking the timestamp of the submission
+              textInput("create_date_time", "", as.integer(Sys.time())),
+              style = "display: none;"
+            ),
+            actionButton("submit", "Submit")
+          ),
+          tabPanel("Open Tasks", DT::DTOutput("open")),
+          tabPanel("Ideas", DT::DTOutput("ideas")),
+          tabPanel("Closed Tasks", DT::DTOutput("closed"))
+        )
+      )
+    )
+          
     
-    DT::DTOutput("task_list"), tags$hr(),
-    
-    div(
-      # hidden input field tracking the timestamp of the submission
-      textInput("create_date_time", "", as.integer(Sys.time())),
-      style = "display: none;"
-    ),
-    actionButton("submit", "Submit")
+    #DT::DTOutput("task_list"), tags$hr(),
 
     
   ),
@@ -111,10 +152,18 @@ shinyApp(
     
     # Show the previous task_data
     # (update with current response when Submit is clicked)
-    output$task_list <- DT::renderDT({
+    output$open <- DT::renderDT({
       input$submit
-      loadTasks()
-    })     
+      loadOpen()
+    })
+    output$ideas <- DT::renderDT({
+      input$submit
+      loadIdeas()
+    })
+    output$closed <- DT::renderDT({
+      input$submit
+      loadClosed()
+    })
   }
 )
 
