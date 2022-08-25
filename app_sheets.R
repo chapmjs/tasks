@@ -61,7 +61,9 @@ loadOpen <- function() {
   # read data from googlesheet
   task_list <- read_sheet(ss)
   # filter for open tasks
-  open_tasks <- filter(task_list, task_list$status == "Open")
+  open_tasks <- filter(task_list, task_list$status == "Open") %>% select(create_date_time, subject, category, note)
+  # filter columns
+  #open_tasks <- open_tasks %>% select(create_date_time, subject, category, note)
   
 }
 loadIdeas <- function() {
@@ -69,6 +71,8 @@ loadIdeas <- function() {
   task_list <- read_sheet(ss)
   # filter for open tasks
   idea_tasks <- filter(task_list, task_list$status == "Idea")
+  # filter columns
+  idea_tasks <- idea_tasks %>% select(create_date_time, subject, category, note)
 
 }
 loadClosed <- function() {
@@ -80,7 +84,7 @@ loadClosed <- function() {
 }
 
 saveData <- function(new_task_data) {
-  ss %>% sheet_append(new_task_data)
+  ss %>% sheet_append(input$subject)
 }
 
 # Define the fields we want to save from the form
@@ -95,11 +99,11 @@ shinyApp(
       sidebarPanel(
         width = 4,
         #selectInput("created_by", "Name", choices = userlist),
-        textInput("subject", "Task", "", width = '300px'),
+        textInput("subject", "Task", ""),
         selectInput("category", "Category", choices = categories),
         textAreaInput("note", "Note (optional), rows = 2"),
-        selectInput("importance", "Importance", choices = c(1,2,3)),
-        selectInput("urgency", "Urgency", choices = c(1, 2, 3)),
+        numericInput("importance", "Importance", value = 1, min = 1, max = 3),
+        numericInput("urgency", "Urgency", value = 1, min = 1, max = 3),
         selectInput("status", "Status", choices = c("Open","Idea", "Closed")),
         #selectInput("assigned", "Proposed Assignee (who should complete the job?)", 
         #            choices = c("Dad","Mom","Josh","Anna","Elisa","Rebekah","Sarah")),
@@ -156,7 +160,7 @@ shinyApp(
     # (update with current response when Submit is clicked)
     output$open <- DT::renderDT({
       input$submit
-      loadOpen()
+      loadOpen() %>% formatDate(columns = 1, "toDateString")
     })
     output$ideas <- DT::renderDT({
       input$submit
