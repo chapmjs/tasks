@@ -73,6 +73,7 @@ loadIdeas <- function() {
   idea_tasks <- filter(task_list, task_list$status == "Idea")
   # filter columns
   idea_tasks <- idea_tasks %>% select(create_date_time, subject, category, note)
+  idea_tasks <- idea_tasks %>% format(1,"toDateString")
 
 }
 loadClosed <- function() {
@@ -160,7 +161,7 @@ shinyApp(
     # (update with current response when Submit is clicked)
     output$open <- DT::renderDT({
       input$submit
-      loadOpen() %>% formatDate(columns = 1, "toDateString")
+      loadOpen()
     })
     output$ideas <- DT::renderDT({
       input$submit
