@@ -23,11 +23,14 @@ ui <- fluidPage(
 )
 
 server <- function(input, output, session) {
-  output$greeting <- eventReactive(input$submit, 
-                                   paste0("Hello ", input$name, "!"))
-  #output$greeting <- renderText(string)
+  inputs <- eventReactive(input$submit,{input})
+  #sheet_append(ss, as.data.frame(inputs))
+  output$greeting <- eventReactive(input$submit, { 
+                                   paste0("Hello ", input$name, "!")
+    })
+
   output$ss_display <- renderDataTable(sheet_data)
-  #sheet_append(ss,input)
+  
   
 }
 
