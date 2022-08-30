@@ -3,16 +3,17 @@ a tasks shiny app
 
 # tbl_tasks
 task_id
-create_datetime
+task_create_datetime
+task_importance
+task_urgency
+task_status [Idea, Open, Closed]
+task_subject
+task_estimated_time
+task_actual_time
 category_id
-importance
-urgency
-status [Idea, Open, Closed]
-subject
-estimated_time
-actual_time
-notes
-contact_id (?)
+contact_id
+contact_group_id
+
 
 # tbl_notes
 note_id
@@ -56,3 +57,7 @@ contact_note
 #tbl_contacts_groups
 contact_group_id
 contact_id
+
+#tbl_categories
+category_id
+category_description

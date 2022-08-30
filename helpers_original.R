@@ -1,5 +1,3 @@
-# helpers.R
-
 # mandatory fields in the form
 fields_mandatory <- c(
   "name"
