@@ -5,6 +5,8 @@
 # 20190604 created input form
 #          created new name for database (taskdb)
 # 20220823 using googlesheets intsead of sqlite
+# 20220830 back to sqlite instead of googlesheets b/c using sheets could result
+#          in data being overwritten by concurrent users.
 
 
 # library installs
