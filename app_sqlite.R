@@ -4,13 +4,13 @@
 # 20190530 Created Github repository
 # 20190604 created input form
 #          created new name for database (taskdb)
+# 20220830 updated task input fields
 
 
-source("helpers.R")
+#source("helpers.R")
 library(shiny)
 library(RSQLite)
-sqlitePath <- "taskdb.sqlite"
-table <- "tasks"
+library(dplyr)
 
 saveData <- function(data) {
   # Connect to the database
@@ -40,39 +40,61 @@ loadData <- function() {
 
 userlist <- function() {
   db <- dbConnect(SQLite(), sqlitePath)
-  query <- sprintf("SELECT name FROM %s", "users")
+  query <- sprintf("SELECT name FROM %s", "tbl_contacts")
   data <- dbGetQuery(db, query)
   dbDisconnect(db)
   data
 }
 
+# Define sqlite
+sqlitePath <- "taskdb.sqlite"
+
+# Define categories
+table <- "tbl_categories"
+categories <- loadData()
+
+# Define tasks table
+table <- "tbl_tasks"
+
+
 
 # Define the fields we want to save from the form
-fields <- c("submitname", "subject", "note", "importance", "urgency", 
-            "assigned","timestamp")
+fields <- c("task_id", "task_create_datetime", "task_subject", "task_status", 
+            "task_estimated_time", "category_id", "task_importance",
+            "task_urgency")
 
-# Shiny app for task input and managment
+# Shiny app for task input and management
 shinyApp(
   ui = fluidPage(
-    DT::dataTableOutput("taskdb", width = 300), tags$hr(),
-    selectInput("submitname", "Name", choices = userlist()),
-    textInput("subject", "Task", "", width = '250px'),
-    textAreaInput("note", "Note (optional), rows = 2"),
-    sliderInput("importance", "Importance (1 is Most Important, 9 is Least Important)",
-                1, 9, 5, ticks = FALSE),
-    sliderInput("urgency", "Urgency (1 is Extremely Urgent, 9 is not urgent)", 
-                1, 9, 5, ticks = FALSE),
-    selectInput("assigned", "Proposed Assignee (who should complete the job?)", 
-                choices = c("Dad","Mom","Josh","Anna","Elisa","Rebekah","Sarah")),
-    div(
-      # hidden input field tracking the timestamp of the submission
-      textInput("timestamp", "", get_time_epoch()),
-      style = "display: none;"
-    ),
-    actionButton("submit", "Submit")
+    title = "Tasks",
+    sidebarLayout(
+      sidebarPanel(
+        width = 4,
+        div(
+          # hidden input field tracking the timestamp of the submission
+          textInput("task_create_datetime", "", Sys.Date()),
+          #textInput("task_id", n_distinct(data$task_id + 1)),
+          style = "display: none;"
+        ),
+        textInput("task_subject", "Task", ""),
+        selectInput("status", "Status", choices = c("Open","Idea", "Closed")),
+        numericInput("task_estimated_time","Time (hours)", ""),
+        selectInput("category_id", "Category", choices = categories),
+        numericInput("task_importance", "Importance", value = 1, min = 1, max = 3),
+        numericInput("task_urgency", "Urgency", value = 1, min = 1, max = 3),
+      
+        actionButton("submit", "Submit")
+        
 
-    
-  ),
+        ),
+    mainPanel(
+      tabsetPanel(
+        id = 'dataset',
+        tabPanel("Tasks", DT::DTOutput("data"))
+      )
+    )
+  )
+ ),
   server = function(input, output, session) {
     
     # Whenever a field is filled, aggregate all form data
